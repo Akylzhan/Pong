@@ -32,6 +32,14 @@ function love.load()
 	opening = love.audio.newSource("opening.ogg", "stream")
 	opening:setVolume(0.7)
 	opening:play()
+
+    touchSound = {
+        [1] = love.audio.newSource("touch1.wav", "stream"),
+        [2] = love.audio.newSource("touch2.wav", "stream"),
+        [3] = love.audio.newSource("touch3.wav", "stream"),
+        [4] = love.audio.newSource("touch4.wav", "stream"),
+        [5] = love.audio.newSource("touch5.wav", "stream")
+    } 
 	-- WINDOW SETTINGS
 	push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
 		fullscreen = false,
@@ -61,21 +69,12 @@ function love.resize(w, h)
 end
 function love.update(dt)
 	-- player 1 movement
-	if love.keyboard.isDown('w') then
+	if love.keyboard.isDown('w') or love.keyboard.isDown('up') then
         player1.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('s') then
+    elseif love.keyboard.isDown('s') or love.keyboard.isDown('down') then
         player1.dy = PADDLE_SPEED
     else
         player1.dy = 0
-    end
-
-    -- player 2 movement
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
-    else
-        player2.dy = 0
     end
 
     if gameState == 'serve' then
@@ -90,7 +89,8 @@ function love.update(dt)
     elseif gameState == 'play' then
    		ball:update(dt)
         if ball:collides(player1) then
-            ball.dx = -ball.dx * 1.03
+            touchSound[math.random(5)]:play()
+            ball.dx = -ball.dx * 1.08
             ball.x = player1.x + 5
 
             if ball.dy < 0 then
@@ -100,7 +100,8 @@ function love.update(dt)
             end
         end
         if ball:collides(player2) then
-            ball.dx = -ball.dx * 1.03
+            touchSound[math.random(5)]:play()
+            ball.dx = -ball.dx * 1.08
             ball.x = player2.x - 4
 
             if ball.dy < 0 then
@@ -145,6 +146,16 @@ function love.update(dt)
         	end
     	end
 	end	
+
+        -- player 2 movement
+    if ball.y < player2.y then
+        player2.dy = -PADDLE_SPEED
+    elseif ball.y - 4 > player2.y then
+        player2.dy = PADDLE_SPEED
+    else
+        player2.dy = 0
+    end
+
     player1:update(dt)
     player2:update(dt)
 end

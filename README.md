@@ -1,2 +1,2 @@
 # Pong
-Pong game written in Lua by Love2d framework
+Pong game written in Lua with Love2d framework
